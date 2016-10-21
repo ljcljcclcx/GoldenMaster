@@ -1,5 +1,6 @@
 package com.clcx.goldenmaster.activies;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +29,7 @@ public class AtyCreator extends BaseActivity {
     public void initView(View view) {
         btnCreator = (Button) findViewById(R.id.btnCreator);
         etCreator = (EditText) findViewById(R.id.etCreator);
-        etCreator.setText(TextUtils.isEmpty(Config.getAlchemista(this).getName()) ? "" : Config.getAlchemista
+        etCreator.setText(Config.getAlchemista(this) == null ? "" : Config.getAlchemista
                 (this).getName());
 
         btnCreator.setOnClickListener(new View.OnClickListener() {
@@ -38,6 +39,8 @@ public class AtyCreator extends BaseActivity {
                     ToastClcxUtil.getInstance().showToast(AtyCreator.this, "名字不能为空");
                 } else {
                     Config.cacheAlchemista(AtyCreator.this, new Alchemista(etCreator.getText().toString()));
+                    startActivity(new Intent(AtyCreator.this, AtyAlchemistHouse.class));
+                    finish();
                 }
             }
         });

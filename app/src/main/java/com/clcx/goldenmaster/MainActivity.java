@@ -38,7 +38,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void animationShow() {
-        AnimationTools.getInstance().alphaAnimation(0.0f, 1.0f).setDuration(2000).start(mainaty_title, new
+        AnimationTools.getInstance().alphaAnimation(0.0f, 1.0f).setDuration(500).start(mainaty_title, new
                 IAnimationTools
                         () {
                     @Override
@@ -46,7 +46,7 @@ public class MainActivity extends BaseActivity {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                SystemClock.sleep(1500);
+                                SystemClock.sleep(1000);
 
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -63,7 +63,7 @@ public class MainActivity extends BaseActivity {
 
     private void animationDismiss() {
         LogCLCXUtils.e("animationDismiss");
-        AnimationTools.getInstance().alphaAnimation(1.0f, 0.0f).setDuration(1000).setFillAfter(true).start
+        AnimationTools.getInstance().alphaAnimation(1.0f, 0.0f).setDuration(500).setFillAfter(true).start
                 (mainaty_title, new IAnimationTools() {
                     @Override
                     public void animateEnd() {

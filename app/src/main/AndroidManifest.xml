@@ -22,6 +22,11 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             />
+        <activity
+            android:name=".activies.AtyAlchemistHouse"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>
