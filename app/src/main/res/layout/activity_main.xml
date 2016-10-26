@@ -10,5 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="炼金师"
+        android:textColor="#000"
         android:textSize="48sp"/>
 </RelativeLayout>

@@ -5,9 +5,11 @@ package com.clcx.goldenmaster.beans;
  * 材料
  */
 public class AlItemMaterial extends AlchemiItem {
-    public AlItemMaterial(String name, int[] propertiesPoint) {
-        super(name, propertiesPoint);
 
+
+    public AlItemMaterial(String prename, String lastName, float[] propertiesPoint, int[] gainStateId, int[]
+            restrainStateId) {
+        super(prename, lastName, propertiesPoint, gainStateId, restrainStateId);
         for (int i = 0; i < propertiesPoint.length; i++) {
             this.price += propertiesPoint[i];
         }
@@ -15,5 +17,9 @@ public class AlItemMaterial extends AlchemiItem {
             this.price = 1;
         }
         this.type = "材料";
+    }
+
+    public AlItemMaterial cloneItem() {
+        return new AlItemMaterial(getPrename(),getLastName(), getPropertiesPoint(),getGainStateId(),getRestrainStateId());
     }
 }

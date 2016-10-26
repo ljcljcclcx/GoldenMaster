@@ -12,17 +12,23 @@ public class Alchemista implements Serializable {
     private String name;
     private List<AlchemiItem> bag;
     private int exp;
-    private int sleepy;
-    private int hungry;
-    private int thirsty;
+    private int energe;
+    private int money;
 
     public Alchemista(String name) {
         this.name = name;
         exp = 0;
-        sleepy = 100;
-        hungry = 100;
-        thirsty = 100;
+        energe = 100;
         bag = new ArrayList<>();
+        money = 100;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void addMoney(int m) {
+        money += m;
     }
 
     public String getName() {
@@ -49,27 +55,12 @@ public class Alchemista implements Serializable {
         this.exp = exp;
     }
 
-    public int getSleepy() {
-        return sleepy;
+    public int getEnerge() {
+        return energe;
     }
 
-    public void setSleepy(int sleepy) {
-        this.sleepy = sleepy;
+    public void setEnerge(int energe) {
+        this.energe = energe;
     }
 
-    public int getHungry() {
-        return hungry;
-    }
-
-    public void setHungry(int hungry) {
-        this.hungry = hungry;
-    }
-
-    public int getThirsty() {
-        return thirsty;
-    }
-
-    public void setThirsty(int thirsty) {
-        this.thirsty = thirsty;
-    }
 }

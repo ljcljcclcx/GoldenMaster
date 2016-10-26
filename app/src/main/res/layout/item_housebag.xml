@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="124dp"
+    android:layout_margin="8dp"
+    app:cardElevation="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.clcx.goldenmaster.customview.CapacityChartView
+            android:id="@+id/housebagItemCapacity"
+            android:layout_width="124dp"
+            android:layout_height="108dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="36dp"
+            android:paddingRight="36dp"/>
+
+        <TextView
+            android:id="@+id/housebagItemName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toLeftOf="@id/housebagItemCapacity"
+            android:textColor="#000"
+            android:textSize="14sp"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

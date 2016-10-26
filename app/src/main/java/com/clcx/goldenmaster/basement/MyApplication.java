@@ -3,6 +3,7 @@ package com.clcx.goldenmaster.basement;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
 
 import java.lang.ref.WeakReference;
 import java.util.Stack;
@@ -13,7 +14,6 @@ import java.util.Stack;
  * @author Nosensmile_L
  */
 public class MyApplication extends Application {
-
     private static Context context;
     /**
      * 对外提供整个应用生命周期的Context
@@ -66,6 +66,10 @@ public class MyApplication extends Application {
      */
     public static Context getContext() {
         return context;
+    }
+
+    public static Resources getAppResources() {
+        return context.getResources();
     }
 
     /******************************************* Application中存放的Activity操作（压栈/出栈）API（开始）

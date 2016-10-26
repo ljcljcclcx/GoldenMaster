@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.clcx.goldenmaster">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".basement.MyApplication"
         android:allowBackup="true"
@@ -18,12 +19,27 @@
         </activity>
 
         <activity
-            android:name=".activies.AtyCreator"
+            android:name=".ui.creator.AtyCreator"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             />
         <activity
-            android:name=".activies.AtyAlchemistHouse"
+            android:name=".ui.house.AtyAlchemistHouse"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".ui.bag.AtyBag"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".ui.alchemist.AtyAlchemit"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".ui.market.AtyMarket"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             />

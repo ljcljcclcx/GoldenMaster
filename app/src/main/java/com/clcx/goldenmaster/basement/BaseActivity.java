@@ -1,119 +1,109 @@
 package com.clcx.goldenmaster.basement;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
-import java.lang.ref.WeakReference;
+import com.clcx.goldenmaster.R;
+import com.clcx.goldenmaster.basement.tools.StatusBarUtil;
+import com.clcx.goldenmaster.basement.tools.TUtil;
+
+import butterknife.ButterKnife;
 
 /**
- * 基础activity
- *
- * @author Nosensmile_L
+ * Created by Administrator on 2016/4/5.
  */
-public abstract class BaseActivity extends FragmentActivity implements IBaseActivity,
+public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel> extends AppCompatActivity implements
         View.OnClickListener {
+    public boolean isNight;
+    public T mPresenter;
+    public E mModel;
+    public Context mContext;
 
-    /***
-     * 整个应用Applicaiton
-     **/
-    private MyApplication mApplication = null;
-    /**
-     * 当前Activity的弱引用，防止内存泄露
-     **/
-    private WeakReference<Activity> context = null;
-    /**
-     * 当前Activity渲染的视图View
-     **/
-    private View mContextView = null;
-    /**
-     * 日志输出标志
-     **/
-    protected final String TAG = this.getClass().getSimpleName();
+    private SwipeBackLayout swipeBackLayout;
+    private ImageView ivShadow;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,
-                "【"
-                        + this.getClass().getName()
-                        + "】-->Est CLCX concu pour verifier le nom de classe ce message!~");
-        Log.d(TAG, "BaseActivity-->onCreate()");
-
-        // 设置渲染视图View
-        mContextView = LayoutInflater.from(this).inflate(bindLayout(), null);
-        setContentView(mContextView);
-
-        //沉浸式
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-
-        // 获取应用Application
-        mApplication = MyApplication.getInstance();
-
-        // 将当前Activity压入栈
-        context = new WeakReference<Activity>(this);
-        mApplication.pushTask(context);
-
-        // 初始化控件
-        initView(mContextView);
-
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d(TAG, "BaseActivity-->onRestart()");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "BaseActivity-->onStart()");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "BaseActivity-->onResume()");
-        resume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG, "BaseActivity-->onPause()");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(TAG, "BaseActivity-->onStop()");
+//        isNight = SpUtil.isNight();
+//        setTheme(isNight ? R.style.AppThemeNight : R.style.AppThemeDay);
+        this.setContentView(this.getLayoutId());
+        ButterKnife.bind(this);
+        mContext = this;
+        mPresenter = TUtil.getT(this, 0);
+        mModel = TUtil.getT(this, 1);
+        if (this instanceof BaseView) mPresenter.setVM(this, mModel);
+        this.initView();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "BaseActivity-->onDestroy()");
-
-        destroy();
-        mApplication.removeTask(context);
+        if (mPresenter != null) mPresenter.onDestroy();
+        ButterKnife.unbind(this);
     }
 
-    /**
-     * 获取当前Activity
-     *
-     * @return
-     */
-    protected Activity getContext() {
-        if (null != context)
-            return context.get();
-        else
-            return null;
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        if (isNight != SpUtil.isNight()) reload();
     }
+
+    public void reload() {
+        Intent intent = getIntent();
+        overridePendingTransition(0, 0);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(intent);
+    }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        if (layoutResID == R.layout.activity_main) {
+            super.setContentView(layoutResID);
+            ActionBar ab = getSupportActionBar();
+            if (ab != null) {
+                ab.hide();
+            }
+            StatusBarUtil.setColor(this, Color.WHITE, 0);
+        } else {
+            super.setContentView(getContainer());
+            View view = LayoutInflater.from(this).inflate(layoutResID, null);
+            view.setBackgroundColor(getResources().getColor(R.color.window_background));
+            swipeBackLayout.addView(view);
+        }
+    }
+
+    private View getContainer() {
+        RelativeLayout container = new RelativeLayout(this);
+        swipeBackLayout = new SwipeBackLayout(this);
+        swipeBackLayout.setDragEdge(SwipeBackLayout.DragEdge.LEFT);
+        ivShadow = new ImageView(this);
+        ivShadow.setBackgroundColor(getResources().getColor(R.color.theme_black_7f));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        container.addView(ivShadow, params);
+        container.addView(swipeBackLayout);
+        swipeBackLayout.setOnSwipeBackListener(new SwipeBackLayout.SwipeBackListener() {
+            @Override
+            public void onViewPositionChanged(float fractionAnchor, float fractionScreen) {
+                ivShadow.setAlpha(1 - fractionScreen);
+            }
+        });
+        return container;
+    }
+
+
+    public abstract int getLayoutId();
+
+    public abstract void initView();
 }

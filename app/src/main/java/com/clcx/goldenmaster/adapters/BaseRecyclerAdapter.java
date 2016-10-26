@@ -16,7 +16,7 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
     /**
      * 数据存储集合
      **/
-    private List<Object> mDataList = new ArrayList<Object>();
+    protected List<Object> mDataList = new ArrayList<Object>();
     /**
      * Context上下文
      **/
