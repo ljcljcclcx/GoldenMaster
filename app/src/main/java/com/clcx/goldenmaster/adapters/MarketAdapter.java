@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.clcx.goldenmaster.R;
+import com.clcx.goldenmaster.basement.util.MathClcxUtil;
 import com.clcx.goldenmaster.beans.AlchemiItem;
 import com.clcx.goldenmaster.beans.MarketItem;
 
@@ -36,7 +37,8 @@ public class MarketAdapter extends BaseRecyclerAdapter {
         MyHolder mHolder = (MyHolder) holder;
         MarketItem bean = (MarketItem) getItem(position);
         mHolder.housemarketItemName.setText(bean.getItem().getName());
-        mHolder.housemarketPrice.setText("售价：$" + bean.getPrice());
+        mHolder.housemarketPrice.setText("$" + MathClcxUtil.getInstance().moneyFormat(bean.getPrice()));
+        mHolder.housemarketSeller.setText("售卖人：" + bean.getSeller());
     }
 
     public void setItems(List<MarketItem> items) {
@@ -48,6 +50,7 @@ public class MarketAdapter extends BaseRecyclerAdapter {
     private class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView housemarketItemName;
+        private TextView housemarketSeller;
         private TextView housemarketPrice;
         private OnItemClickListener onItemClickListener;
 
@@ -56,6 +59,7 @@ public class MarketAdapter extends BaseRecyclerAdapter {
             this.onItemClickListener = onItemClickListener;
             housemarketItemName = (TextView) itemView.findViewById(R.id.housemarketItemName);
             housemarketPrice = (TextView) itemView.findViewById(R.id.housemarketPrice);
+            housemarketSeller = (TextView) itemView.findViewById(R.id.housemarketSeller);
             itemView.setOnClickListener(this);
         }
 

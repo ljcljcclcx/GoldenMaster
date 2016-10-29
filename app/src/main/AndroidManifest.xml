@@ -3,6 +3,8 @@
           package="com.clcx.goldenmaster">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:name=".basement.MyApplication"
         android:allowBackup="true"
@@ -43,6 +45,42 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             />
+
+        <activity
+            android:name=".ui.message.AtyMessage"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".ui.Rest.AtyRest"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".ui.headselector.ClipActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".ui.investment.AtyInvestment"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".ui.appraisal.AtyAppraisal"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+
+        <!-- 消息推送的服务 -->
+        <service
+            android:name="com.clcx.goldenmaster.service.MessageLocalService"
+            android:exported="false"/>
+        <!-- 消息推送的服务的守护进程 -->
+        <service
+            android:name="com.clcx.goldenmaster.service.MessageProService"
+            android:exported="false"
+            android:process=".remoteService"/>
     </application>
 
 </manifest>

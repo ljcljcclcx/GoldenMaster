@@ -1,8 +1,11 @@
 package com.clcx.goldenmaster.ui.market;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,9 +15,16 @@ import com.clcx.goldenmaster.R;
 import com.clcx.goldenmaster.adapters.HouseBagAdapter;
 import com.clcx.goldenmaster.adapters.MarketAdapter;
 import com.clcx.goldenmaster.basement.BaseActivity;
+import com.clcx.goldenmaster.basement.util.ToastClcxUtil;
+import com.clcx.goldenmaster.beans.AlchemiItem;
+import com.clcx.goldenmaster.beans.MarketItem;
+import com.clcx.goldenmaster.customview.CapacityBean;
+import com.clcx.goldenmaster.customview.CapacityChartView;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+
+import static android.R.attr.layout_height;
 
 /**
  * Created by ljc123 on 2016/10/21.
@@ -58,17 +68,48 @@ public class AtyMarket extends BaseActivity<MarketPresenter, MarketModel> implem
 
     @Override
     public void initView() {
-
         //市场的adapter
         marketAdapter = new MarketAdapter(this);
-        houseRecyclerMarket.setLayoutManager(new LinearLayoutManager(this));
+        houseRecyclerMarket.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         houseRecyclerMarket.setAdapter(marketAdapter);
+        marketAdapter.setItems(mModel.getMarketItems());
         marketAdapter.setOnItemClickListener(new MarketAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-
+                MarketItem item = (MarketItem) marketAdapter.getItem(position);
+                createChecfinalkDialog(item.getItem(), position);
             }
         });
+    }
+
+    private void createChecfinalkDialog(AlchemiItem item, final int position) {
+        View view = View.inflate(this, R.layout.alertdialog_market, null);
+        final TextView marketDialogTv = (TextView) view.findViewById(R.id.marketDialogTv);
+        final CapacityChartView marketDialogCapacity = (CapacityChartView) view.findViewById(R.id.marketDialogCapacity);
+        marketDialogTv.setText(item.getIntro());
+        marketDialogCapacity.setData(Config.setCapacities(item), 15);
+        marketDialogCapacity.setOnCapacityTopPointTouchListener(new CapacityChartView
+                .OnCapacityTopPointTouchListener() {
+            @Override
+            public void touchCapacity(CapacityBean bean) {
+                ToastClcxUtil.getInstance().showToast(bean.getCapacityName() + "：" + bean
+                        .getCapacityPoint());
+            }
+        });
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .setPositiveButton("购买", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPresenter.buyItem(position);
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .create();
+
+        dialog.show();
+
     }
 
     @OnClick(R.id.houseMarketOrderPrice)
@@ -125,5 +166,10 @@ public class AtyMarket extends BaseActivity<MarketPresenter, MarketModel> implem
         houseMarketOrderWaiguan.setShadowLayer(0, 0, 0, Color.TRANSPARENT);
         houseMarketOrderCIji.setShadowLayer(0, 0, 0, Color.TRANSPARENT);
         v.setShadowLayer(15.0f, 0, 0, Color.RED);
+    }
+
+    @Override
+    public MarketAdapter getAdapter() {
+        return marketAdapter;
     }
 }

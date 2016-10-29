@@ -51,8 +51,8 @@ public class Alchemista implements Serializable {
         return exp;
     }
 
-    public void setExp(int exp) {
-        this.exp = exp;
+    public void addExp(int exp) {
+        this.exp += exp;
     }
 
     public int getEnerge() {
@@ -61,6 +61,13 @@ public class Alchemista implements Serializable {
 
     public void setEnerge(int energe) {
         this.energe = energe;
+    }
+
+    public void reduceEnerge(int reduce) {
+        this.energe -= reduce;
+        if (this.energe < 0) {
+            this.energe = 0;
+        }
     }
 
 }

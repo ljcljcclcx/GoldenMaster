@@ -22,34 +22,26 @@ import java.util.List;
 public class PresenterAlHouse extends HouseContract.Presenter {
 
     @Override
-    void turnToNews() {
-
-    }
-
-    @Override
-    void turnToRest() {
-
-    }
-
-    @Override
-    void turnToCollection() {
-
-    }
-
-
-
-    @Override
     void testItems() {
-        AlchemistaAction.builder().putItemToBag(MaterialFactory.createRandomItem());
+        if (Config.getAlchemista().getEnerge() > Config.COLLECTION_ENERGE_REDUCE) {
+            AlchemiItem item = MaterialFactory.createRandomItem();
+            AlchemistaAction.builder().putItemToBag(item);
+            ToastClcxUtil.getInstance().showToast("找到了" + item.getName());
+            AlchemistaAction.builder().reduceEnerge(Config.COLLECTION_ENERGE_REDUCE);
+            //搜索+1经验
+            AlchemistaAction.builder().addExp(1);
+            initUI();
+        } else {
+            ToastClcxUtil.getInstance().showToast("你太累了，无法探索了！");
+        }
+
     }
 
     @Override
     void initUI() {
         mView.setTextviewState();
-        mView.setRecyclerViewAdapter();
-        if (Config.deltaDay() > 1) {
-            ToastClcxUtil.getInstance().showToast("新的一天开始了！");
-            Config.createTodayMarket();
+        if (Config.deltaDay() >= 1) {
+            Config.newDay();
         }
     }
 

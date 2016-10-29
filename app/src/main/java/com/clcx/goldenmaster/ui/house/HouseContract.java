@@ -24,20 +24,9 @@ public interface HouseContract {
     interface View extends BaseView {
         void setTextviewState();
 
-        void setRecyclerViewAdapter();
-
-
-        //以下6个turnTo是切换内容页
-
-        void turnToNews();
-
-        void turnToRest();
-
-        void turnToCollection();
     }
 
     abstract class Presenter extends BasePresenter<Model, View> {
-
 
         @Override
         public void onStart() {
@@ -46,15 +35,6 @@ public interface HouseContract {
         abstract void testItems();
 
         abstract void initUI();
-
-
-        //以下6个turnTo是切换内容页
-        abstract void turnToNews();
-
-        abstract void turnToRest();
-
-        abstract void turnToCollection();
-
 
     }
 }

@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.clcx.goldenmaster.R;
 import com.clcx.goldenmaster.basement.tools.helper.GlideCircleTransform;
+import com.clcx.goldenmaster.basement.util.LogCLCXUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,9 +38,10 @@ public class ImageUtil {
     }
 
     public static void loadRoundImg(ImageView v, String url) {
+        LogCLCXUtils.e("loadRoundImg");
         Glide.with(v.getContext())
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transform(new GlideCircleTransform(v.getContext()))
                 .error(R.mipmap.ic_launcher)
                 .into(v);

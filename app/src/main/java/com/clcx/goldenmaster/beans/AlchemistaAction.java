@@ -14,7 +14,6 @@ import java.util.List;
  */
 public class AlchemistaAction {
     public static AlchemistaActionBuilder builder() {
-        return new AlchemistaActionBuilder(MyApplication.getContext(), Config.getAlchemista(MyApplication.getContext
-                ()));
+        return new AlchemistaActionBuilder(MyApplication.getContext(), Config.getAlchemista());
     }
 }

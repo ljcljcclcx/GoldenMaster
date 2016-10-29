@@ -1,5 +1,6 @@
 package com.clcx.goldenmaster.ui.bag;
 
+import com.clcx.goldenmaster.adapters.HouseBagAdapter;
 import com.clcx.goldenmaster.basement.BaseModel;
 import com.clcx.goldenmaster.basement.BasePresenter;
 import com.clcx.goldenmaster.basement.BaseView;
@@ -20,5 +21,11 @@ public interface BagContract {
         public void onStart() {
 
         }
+
+        /**
+         * 上架物品
+         * @param location
+         */
+        abstract void sellItem(int location, HouseBagAdapter adapter);
     }
 }

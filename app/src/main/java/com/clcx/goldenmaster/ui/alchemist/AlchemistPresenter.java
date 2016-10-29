@@ -14,7 +14,7 @@ import com.clcx.goldenmaster.beans.AlchemistaAction;
 public class AlchemistPresenter extends AlchemistContract.Presenter {
     @Override
     void addItemToBottle(int location, AlchemistAdapter bag, AlchemistAdapter bottle) {
-        Alchemista aa = Config.getAlchemista(MyApplication.getContext());
+        Alchemista aa = Config.getAlchemista();
         AlchemiItem item = aa.getBag().get(location);
         //判断瓶中材料不能一样
         for (int a = 0; a < itemsInBottle.size(); a++) {
@@ -30,7 +30,7 @@ public class AlchemistPresenter extends AlchemistContract.Presenter {
 
         AlchemistaAction.builder().lostItem(location);
         itemsInBottle.add(item);
-        bag.setItems(Config.getAlchemista(MyApplication.getContext()).getBag());
+        bag.setItems(Config.getAlchemista().getBag());
         bag.notifyDataSetChanged();
         bottle.setItems(itemsInBottle);
         bottle.notifyDataSetChanged();
@@ -45,7 +45,7 @@ public class AlchemistPresenter extends AlchemistContract.Presenter {
         AlchemiItem item = itemsInBottle.get(location);
         AlchemistaAction.builder().putItemToBag(item);
         itemsInBottle.remove(item);
-        bag.setItems(Config.getAlchemista(MyApplication.getContext()).getBag());
+        bag.setItems(Config.getAlchemista().getBag());
         bag.notifyDataSetChanged();
         bottle.setItems(itemsInBottle);
         bottle.notifyDataSetChanged();
@@ -56,11 +56,25 @@ public class AlchemistPresenter extends AlchemistContract.Presenter {
 
     @Override
     void alchemist(AlchemistAdapter bag, AlchemistAdapter bottle) {
-        AlchemistaAction.builder().alchemist(itemsInBottle);
-        bottle.clear();
-        itemsInBottle.clear();
-        bottle.notifyDataSetChanged();
-        bag.setItems(Config.getAlchemista(MyApplication.getContext()).getBag());
-        bag.notifyDataSetChanged();
+        if (Config.getAlchemista().getEnerge() > Config.ALCHAMIST_ENERGE_REDUCE) {
+            AlchemistaAction.builder().alchemist(itemsInBottle);
+            bottle.clear();
+            itemsInBottle.clear();
+            bottle.notifyDataSetChanged();
+            bag.setItems(Config.getAlchemista().getBag());
+            bag.notifyDataSetChanged();
+            //炼金+3经验
+            AlchemistaAction.builder().addExp(3);
+            AlchemistaAction.builder().reduceEnerge(Config.ALCHAMIST_ENERGE_REDUCE);
+        } else {
+            ToastClcxUtil.getInstance().showToast("你太累了，无法炼金了！");
+        }
+    }
+
+    @Override
+    void removeAllFromBottle() {
+        for (AlchemiItem item : itemsInBottle) {
+            AlchemistaAction.builder().putItemToBag(item);
+        }
     }
 }

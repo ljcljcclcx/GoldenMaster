@@ -23,6 +23,8 @@ public class AlchemistaActionBuilder implements IAlchemistaAction {
         this.context = context;
     }
 
+    private static final String[] PRODUCT_LASTNAME_RANDOM = {"α", "β", "γ", "∑", "XY"};
+
     /**
      * 开始炼金
      *
@@ -33,14 +35,19 @@ public class AlchemistaActionBuilder implements IAlchemistaAction {
         List<String> preNames = new ArrayList<>();
         List<String> lastNames = new ArrayList<>();
         for (int b = 0; b < alitems.size(); b++) {
-            preNames.add(alitems.get(b).getPrename());
-            lastNames.add(alitems.get(b).getLastName());
+            if (!alitems.get(b).isAppraisal()) {
+                preNames.add(alitems.get(b).getPrename());
+                lastNames.add(alitems.get(b).getLastName());
+            }
         }
         int randomInt = MathClcxUtil.getInstance().randomInt(alitems.size());
-        String productPreName = preNames.get(randomInt);
-        lastNames.remove(randomInt);
+        String productPreName = preNames.size() > 0 ? preNames.get(randomInt) : "炼金师";
+        if (lastNames.size() > 0) {
+            lastNames.remove(randomInt);
+        }
         randomInt = MathClcxUtil.getInstance().randomInt(lastNames.size());
-        String productLastName = lastNames.get(randomInt);
+        String productLastName = lastNames.size() > 0 ? lastNames.get(randomInt) :
+                PRODUCT_LASTNAME_RANDOM[MathClcxUtil.getInstance().randomInt(PRODUCT_LASTNAME_RANDOM.length)];
         if (productLastName.length() >= 2) {
             if (!productLastName.substring(productLastName.length() - 2).equals("试剂")) {
                 productLastName = productLastName + "试剂";
@@ -115,7 +122,8 @@ public class AlchemistaActionBuilder implements IAlchemistaAction {
 
         AlchemiItem product = new AlItemProduct(productPreName, productLastName, productProperties
                 , finalGain
-                , finalRestrain);
+                , finalRestrain
+                , Config.getAlchemista().getExp());
 
         putItemToBag(product);
     }
@@ -165,5 +173,26 @@ public class AlchemistaActionBuilder implements IAlchemistaAction {
         } else {
             return "高级炼金师";
         }
+    }
+
+    @Override
+    public void getMoney(int price) {
+        alchemista.addMoney(price);
+        Config.cacheAlchemista(context, alchemista);
+    }
+
+    @Override
+    public void reduceEnerge(int reduce) {
+        alchemista.setEnerge(alchemista.getEnerge() - reduce);
+        if (alchemista.getEnerge() >= 100) {
+            alchemista.setEnerge(100);
+        }
+        Config.cacheAlchemista(context, alchemista);
+    }
+
+    @Override
+    public void addExp(int exp) {
+        alchemista.addExp(exp);
+        Config.cacheAlchemista(context, alchemista);
     }
 }

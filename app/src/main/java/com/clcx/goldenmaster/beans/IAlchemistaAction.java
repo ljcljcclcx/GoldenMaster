@@ -18,4 +18,10 @@ public interface IAlchemistaAction {
     void putItemToShop(AlchemiItem item);
 
     String getAlchemistaNickName();//获取称号
+
+    void getMoney(int price);
+
+    void reduceEnerge(int reduce);//减少体力
+
+    void addExp(int exp);//增加经验值
 }

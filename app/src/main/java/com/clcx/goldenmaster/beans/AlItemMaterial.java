@@ -11,7 +11,7 @@ public class AlItemMaterial extends AlchemiItem {
             restrainStateId) {
         super(prename, lastName, propertiesPoint, gainStateId, restrainStateId);
         for (int i = 0; i < propertiesPoint.length; i++) {
-            this.price += propertiesPoint[i];
+            this.price += countFinalPrice(propertiesPoint[i], i);
         }
         if (this.price <= 0) {
             this.price = 1;
@@ -20,6 +20,8 @@ public class AlItemMaterial extends AlchemiItem {
     }
 
     public AlItemMaterial cloneItem() {
-        return new AlItemMaterial(getPrename(),getLastName(), getPropertiesPoint(),getGainStateId(),getRestrainStateId());
+        return new AlItemMaterial(getPrename(), getLastName(), getPropertiesPoint(), getGainStateId(),
+                getRestrainStateId());
     }
+
 }

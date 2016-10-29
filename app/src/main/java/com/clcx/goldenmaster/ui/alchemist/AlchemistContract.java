@@ -39,5 +39,6 @@ public interface AlchemistContract {
 
         abstract void alchemist(AlchemistAdapter bag, AlchemistAdapter bottle);//进行炼金
 
+        abstract void removeAllFromBottle();//离开时退出所有瓶内材料
     }
 }

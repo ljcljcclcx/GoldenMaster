@@ -6,12 +6,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.clcx.goldenmaster.basement.util.OrderClcxUtil;
+import com.clcx.goldenmaster.beans.Alchemista;
 import com.clcx.goldenmaster.ui.house.AtyAlchemistHouse;
 import com.clcx.goldenmaster.ui.creator.AtyCreator;
 import com.clcx.goldenmaster.basement.BaseActivity;
 import com.clcx.goldenmaster.basement.util.LogCLCXUtils;
 import com.clcx.goldenmaster.basement.tools.AnimationTools;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +79,30 @@ public class MainActivity extends BaseActivity {
 
         }
         animationShow();
+//        order();
+    }
+
+    private void order() {
+        List<Integer> intss = new ArrayList<>();
+        intss.add(2);
+        intss.add(23);
+        intss.add(115);
+        intss.add(12);
+        intss.add(18);
+        intss.add(88);
+        intss.add(92);
+        intss.add(42);
+        intss.add(19);
+        OrderClcxUtil.getInstance().insertOrder(intss);
+        LogCLCXUtils.e(intss + "s");
+    }
+
+    private void testRefrection() throws ClassNotFoundException {
+        Class tmp = Class.forName("com.clcx.goldenmaster.beans.Alchemista");
+        Method method[] = tmp.getMethods();
+        for (Method m : method) {
+            LogCLCXUtils.e(m.getName());
+        }
     }
 }
 

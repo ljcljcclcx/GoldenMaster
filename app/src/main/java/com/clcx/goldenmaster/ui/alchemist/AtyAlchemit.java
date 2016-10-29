@@ -44,9 +44,10 @@ public class AtyAlchemit extends BaseActivity<AlchemistPresenter, AlchemistModel
 
     @Override
     public void initView() {
+        CanNotAlchemist();
         //炼金时的两个adapter
-        bagAdapter = new AlchemistAdapter(this);
-        bagAdapter.setItems(Config.getAlchemista(this).getBag());
+        bagAdapter = new AlchemistAdapter(this,false);
+        bagAdapter.setItems(Config.getAlchemista().getBag());
         houseRecyclerBagWhenAlchemist.setLayoutManager(new LinearLayoutManager(this));
         houseRecyclerBagWhenAlchemist.setAdapter(bagAdapter);
         bagAdapter.setOnItemClickListener(new AlchemistAdapter.OnItemClickListener() {
@@ -55,7 +56,7 @@ public class AtyAlchemit extends BaseActivity<AlchemistPresenter, AlchemistModel
                 mPresenter.addItemToBottle(position, bagAdapter, bottleAdapter);
             }
         });
-        bottleAdapter = new AlchemistAdapter(this);
+        bottleAdapter = new AlchemistAdapter(this,true);
         houseRecyclerAlchemistBottle.setLayoutManager(new LinearLayoutManager(this));
         houseRecyclerAlchemistBottle.setAdapter(bottleAdapter);
         bottleAdapter.setOnItemClickListener(new AlchemistAdapter.OnItemClickListener() {
@@ -80,5 +81,11 @@ public class AtyAlchemit extends BaseActivity<AlchemistPresenter, AlchemistModel
     public void houseAlchemistBtn(View v) {
         mPresenter.alchemist(bagAdapter, bottleAdapter);
         v.setEnabled(false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.removeAllFromBottle();
     }
 }

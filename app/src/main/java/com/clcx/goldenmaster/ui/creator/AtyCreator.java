@@ -31,14 +31,18 @@ public class AtyCreator extends BaseActivity<PreCreator, CreatorModel> implement
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnCreator:
-                if (Config.getAlchemista(this) != null) {
+                if (Config.getAlchemista() != null) {
                     startActivity(new Intent(AtyCreator.this, AtyAlchemistHouse.class));
                     finish();
                 } else {
                     if (TextUtils.isEmpty(etCreator.getText().toString())) {
                         ToastClcxUtil.getInstance().showToast("名字不能为空");
                     } else {
-                        Config.cacheAlchemista(AtyCreator.this, new Alchemista(etCreator.getText().toString()));
+                        Alchemista alc = new Alchemista(etCreator.getText().toString());
+                        Config.cacheAlchemista(AtyCreator.this, alc);
+                        alc.setEnerge(100);
+                        Config.cacheAlchemista(AtyCreator.this, alc);
+                        Config.newDay();
                         startActivity(new Intent(AtyCreator.this, AtyAlchemistHouse.class));
                         finish();
                     }
@@ -60,11 +64,11 @@ public class AtyCreator extends BaseActivity<PreCreator, CreatorModel> implement
 
     @Override
     public void initView() {
-        etCreator.setText(Config.getAlchemista(this) == null ? "" : Config.getAlchemista
-                (this).getName());
+        etCreator.setText(Config.getAlchemista() == null ? "" : Config.getAlchemista
+                ().getName());
         btnCreator.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
-        if (Config.getAlchemista(this) != null) {
+        if (Config.getAlchemista() != null) {
             forbidEditText();
         } else {
             releaseEditText();

@@ -251,7 +251,7 @@ public class CapacityChartView extends View {
                         }
                     }
                 }
-                break;
+                return true;
             default:
                 break;
         }

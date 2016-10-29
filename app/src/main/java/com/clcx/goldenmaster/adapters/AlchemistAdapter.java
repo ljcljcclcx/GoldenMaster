@@ -22,9 +22,11 @@ import java.util.List;
  */
 public class AlchemistAdapter extends BaseRecyclerAdapter {
     private OnItemClickListener onItemClickListener;
+    private boolean isBottle;
 
-    public AlchemistAdapter(Activity mContext) {
+    public AlchemistAdapter(Activity mContext, boolean isBottle) {
         super(mContext);
+        this.isBottle = isBottle;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class AlchemistAdapter extends BaseRecyclerAdapter {
     protected void bindHolder(RecyclerView.ViewHolder holder, int position) {
         MyHolder mHolder = (MyHolder) holder;
         AlchemiItem bean = (AlchemiItem) getItem(position);
-        mHolder.item_alchemist_name.setText(bean.getName());
+        mHolder.item_alchemist_name.setText(isBottle ? bean.getIntro() : bean.getName());
     }
 
     public void setItems(List<AlchemiItem> items) {
@@ -68,7 +70,6 @@ public class AlchemistAdapter extends BaseRecyclerAdapter {
         }
     }
 
-
     public interface OnItemClickListener {
         void onItemClick(View v, int position);
     }
@@ -76,4 +77,6 @@ public class AlchemistAdapter extends BaseRecyclerAdapter {
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
+
+
 }
