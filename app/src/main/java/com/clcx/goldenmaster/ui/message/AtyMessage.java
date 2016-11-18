@@ -55,7 +55,7 @@ public class AtyMessage extends BaseActivity<MessagePresenter, MessageModel> imp
         adapter.setOnItemClickListener(new MessageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                mPresenter.clickMessage(position);
+                mPresenter.clickMessage(position, true);
             }
         });
     }
@@ -69,8 +69,10 @@ public class AtyMessage extends BaseActivity<MessagePresenter, MessageModel> imp
     @OnClick(R.id.messageOnclick)
     public void messageOnclick(View v) {
         int size = adapter.getItemCount();
+        int totalMoney = 0;
         for (int a = 0; a < size; a++) {
-            mPresenter.clickMessage(0);
+            totalMoney += mPresenter.clickMessage(0, false);
         }
+        ToastClcxUtil.getInstance().showToast("一共收取$" + totalMoney);
     }
 }

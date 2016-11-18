@@ -69,7 +69,7 @@ public class AlchemistaActionBuilder implements IAlchemistaAction {
 //        }
         //计算平均值
         for (int i = 0; i < AlchemiItem.MAX_PROPERTY_COUNT; i++) {
-            productProperties[i] = (int) ((float) productProperties[i] / (float) alitems.size());
+            productProperties[i] = productProperties[i] / (float) alitems.size();
         }
         //打印测试结果
 //        for (int i = 0; i < productProperties.length; i++) {
@@ -120,10 +120,11 @@ public class AlchemistaActionBuilder implements IAlchemistaAction {
 //            LogCLCXUtils.e("最终：" + alitems.get(0).getProperties()[i] + ":" + productProperties[i]);
 //        }
 
-        AlchemiItem product = new AlItemProduct(productPreName, productLastName, productProperties
+        AlItemProduct product = new AlItemProduct(productPreName, productLastName, productProperties
                 , finalGain
                 , finalRestrain
                 , Config.getAlchemista().getExp());
+        product.resetRecipe(alitems);
 
         putItemToBag(product);
     }
@@ -155,6 +156,12 @@ public class AlchemistaActionBuilder implements IAlchemistaAction {
         for (AlchemiItem a : alchemista.getBag()) {
             LogCLCXUtils.e(a.getName());
         }
+        Config.cacheAlchemista(context, alchemista);
+    }
+
+    @Override
+    public void lockUnlockItem(int location) {
+        alchemista.getBag().get(location).setLocked(!alchemista.getBag().get(location).isLocked());
         Config.cacheAlchemista(context, alchemista);
     }
 

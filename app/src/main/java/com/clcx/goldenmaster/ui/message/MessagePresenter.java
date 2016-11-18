@@ -74,14 +74,21 @@ public class MessagePresenter extends MessageContract.Presenter {
         MessageModel.saveMessages(messages);
     }
 
+    /**
+     * @param location
+     * @param ifToast  如果是一键收取，则不吐司，并返回当前的价值
+     */
     @Override
-    void clickMessage(int location) {
+    int clickMessage(int location, boolean ifToast) {
         MessageBean bean = (MessageBean) mView.getAdapter().getItem(location);
         AlchemistaAction.builder().getMoney(bean.getPrice());
-        ToastClcxUtil.getInstance().showToast("获得$" + bean.getPrice());
+        if (ifToast) {
+            ToastClcxUtil.getInstance().showToast("获得$" + bean.getPrice());
+        }
         mView.getAdapter().removeItem(location);
         mView.getAdapter().notifyItemRemoved(location);
         mModel.removeMessage(location);
+        return bean.getPrice();
     }
 
     //出售价格区间，必须连续

@@ -15,6 +15,8 @@ public interface IAlchemistaAction {
 
     void lostItem(int location);//失去物品
 
+    void lockUnlockItem(int location);//锁定物品
+
     void putItemToShop(AlchemiItem item);
 
     String getAlchemistaNickName();//获取称号

@@ -9,30 +9,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.clcx.goldenmaster.R;
-import com.clcx.goldenmaster.basement.util.LogCLCXUtils;
-import com.clcx.goldenmaster.basement.util.ToastClcxUtil;
-import com.clcx.goldenmaster.beans.AlchemiItem;
-import com.clcx.goldenmaster.customview.CapacityBean;
-import com.clcx.goldenmaster.customview.CapacityChartView;
+import com.clcx.goldenmaster.beans.MessageBean;
+import com.clcx.goldenmaster.beans.MissionBean;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ljc123 on 2016/7/4.
  */
-public class AlchemistAdapter extends BaseRecyclerAdapter {
+public class MissionAdapter extends BaseRecyclerAdapter {
     private OnItemClickListener onItemClickListener;
-    private boolean isBottle;
 
-    public AlchemistAdapter(Activity mContext, boolean isBottle) {
+    public MissionAdapter(Activity mContext) {
         super(mContext);
-        this.isBottle = isBottle;
     }
 
     @Override
     protected RecyclerView.ViewHolder createHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(getActivity()).inflate(R.layout.item_alchemist_container, parent, false);
+        View v = LayoutInflater.from(getActivity()).inflate(R.layout.item_mission, parent, false);
         MyHolder holder = new MyHolder(v, onItemClickListener);
 
         return holder;
@@ -41,26 +35,33 @@ public class AlchemistAdapter extends BaseRecyclerAdapter {
     @Override
     protected void bindHolder(RecyclerView.ViewHolder holder, int position) {
         MyHolder mHolder = (MyHolder) holder;
-        AlchemiItem bean = (AlchemiItem) getItem(position);
-        mHolder.item_alchemist_name.setText(isBottle ? bean.getIntro() : bean.getName());
-        mHolder.item_alchemist_name.setTextColor(bean.isLocked() ? Color.RED : Color.BLACK);
+        MissionBean bean = (MissionBean) getItem(position);
+        mHolder.tvMissionName.setText(bean.getIntro());
+        mHolder.tvMissionReward.setText("奖励：$" + bean.getReward());
+        String str = bean.isFinish() ? "未完成：" : "已完成：";
+        int strColor = bean.isFinish() ? Color.rgb(255, 0, 0) : Color.rgb(0, 0, 0);
+        mHolder.tvMissionProcess.setText(str + bean.getCurrentNumber() + "/" + bean.getNeedNumber());
+        mHolder.tvMissionProcess.setTextColor(strColor);
     }
 
-    public void setItems(List<AlchemiItem> items) {
+    public void setItems(List<MissionBean> items) {
         this.clear();
         this.addItem(items);
         notifyDataSetChanged();
     }
 
     private class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private TextView item_alchemist_name;
+        TextView tvMissionName;
+        TextView tvMissionProcess;
+        TextView tvMissionReward;
         private OnItemClickListener onItemClickListener;
 
         public MyHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             this.onItemClickListener = onItemClickListener;
-            item_alchemist_name = (TextView) itemView.findViewById(R.id.item_alchemist_name);
+            tvMissionName = (TextView) itemView.findViewById(R.id.tvMissionName);
+            tvMissionProcess = (TextView) itemView.findViewById(R.id.tvMissionProcess);
+            tvMissionReward = (TextView) itemView.findViewById(R.id.tvMissionReward);
             itemView.setOnClickListener(this);
         }
 
@@ -72,6 +73,7 @@ public class AlchemistAdapter extends BaseRecyclerAdapter {
         }
     }
 
+
     public interface OnItemClickListener {
         void onItemClick(View v, int position);
     }
@@ -79,6 +81,4 @@ public class AlchemistAdapter extends BaseRecyclerAdapter {
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
-
-
 }

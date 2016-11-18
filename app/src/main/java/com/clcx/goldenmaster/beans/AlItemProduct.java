@@ -2,6 +2,8 @@ package com.clcx.goldenmaster.beans;
 
 import com.clcx.goldenmaster.ui.appraisal.AppraisalType;
 
+import java.util.List;
+
 /**
  * Created by ljc123 on 2016/10/21.
  * 成品
@@ -29,5 +31,21 @@ public class AlItemProduct extends AlchemiItem {
         this.lastName = "药剂";
         this.price *= type.getScore();
         this.setAppraisal(true);
+    }
+
+    /**
+     * 重新设置配方
+     *
+     * @param items
+     */
+    public void resetRecipe(List<AlchemiItem> items) {
+        StringBuffer stb = new StringBuffer();
+        stb.append("「");
+        for (AlchemiItem item : items) {
+            stb.append(item.getRecipe() + "+");
+        }
+        stb.deleteCharAt(stb.length() - 1);
+        stb.append("」");
+        this.recipe = stb.toString();
     }
 }

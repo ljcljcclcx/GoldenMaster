@@ -1,1 +1,1 @@
-include ':app', ':libg'
+include ':app'

@@ -1,5 +1,6 @@
 package com.clcx.goldenmaster.customview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,9 +27,9 @@ public class AlwaysMarqueeTextView extends View {
     private int currentX;
     private int maxLength;
     private int viewWidth;
-    private RefreshMaqee refreshMaqee;
     private String[] texts;
     private boolean isManyTexts;//是否是多个text切换
+    private Activity activity;
 
     public AlwaysMarqueeTextView(Context context) {
         super(context);
@@ -58,16 +59,22 @@ public class AlwaysMarqueeTextView extends View {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                if (currentX <= -1 * maxLength) {
-                    currentX = viewWidth;
-                    if (isManyTexts) {
-                        text = texts[MathClcxUtil.getInstance().randomInt(texts.length)];
+                if (activity != null) {
+                    if (currentX <= -1 * maxLength) {
+                        currentX = viewWidth;
+                        if (isManyTexts) {
+                            text = texts[MathClcxUtil.getInstance().randomInt(texts.length)];
+                        }
                     }
+                    currentX -= 2;
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            invalidate();
+                        }
+                    });
                 }
-                currentX -= 2;
-                if (refreshMaqee != null) {
-                    refreshMaqee.invalidateMe();
-                }
+
             }
         };
         timer.schedule(task, 1000, 6);
@@ -87,22 +94,18 @@ public class AlwaysMarqueeTextView extends View {
                 .height() / 2, textPaint);
     }
 
-    public void setText(String text, RefreshMaqee refreshMaqee) {
-        this.refreshMaqee = refreshMaqee;
+    public void setText(Activity activity, String text) {
         this.text = text;
+        this.activity = activity;
         this.isManyTexts = false;
         invalidate();
     }
 
-    public void setTexts(String[] texts, RefreshMaqee refreshMaqee) {
-        this.refreshMaqee = refreshMaqee;
+    public void setTexts(Activity activity, String[] texts) {
+        this.activity = activity;
         this.texts = texts;
         text = texts[MathClcxUtil.getInstance().randomInt(texts.length)];
         this.isManyTexts = true;
         invalidate();
-    }
-
-    public interface RefreshMaqee {
-        void invalidateMe();
     }
 }

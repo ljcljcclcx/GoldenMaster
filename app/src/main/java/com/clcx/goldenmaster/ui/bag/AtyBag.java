@@ -22,6 +22,8 @@ import com.clcx.goldenmaster.beans.AlchemiItem;
 import com.clcx.goldenmaster.beans.Alchemista;
 import com.clcx.goldenmaster.beans.AlchemistaAction;
 import com.clcx.goldenmaster.beans.MarketItem;
+import com.clcx.goldenmaster.beans.MissionBean;
+import com.clcx.goldenmaster.factories.MissionFactory;
 import com.clcx.goldenmaster.ui.alchemist.AtyAlchemit;
 import com.clcx.goldenmaster.ui.appraisal.AppraisalModel;
 import com.clcx.goldenmaster.ui.appraisal.AppraisalType;
@@ -31,6 +33,7 @@ import com.clcx.goldenmaster.ui.creator.CreatorModel;
 import com.clcx.goldenmaster.ui.creator.PreCreator;
 import com.clcx.goldenmaster.ui.house.AtyAlchemistHouse;
 import com.clcx.goldenmaster.ui.market.MarketModel;
+import com.clcx.goldenmaster.ui.mission.MissionModel;
 
 import butterknife.Bind;
 
@@ -101,22 +104,27 @@ public class AtyBag extends BaseActivity<BagPresenter, BagModel> implements BagC
                         ToastClcxUtil.getInstance().showToast("不可鉴定材料或是已鉴定药剂！");
                     }
                 } else {
+                    String lockStr = item.isLocked() ? "解除锁定" : "锁定";
                     //否则显示上架等
                     AlertDialog dialog = new AlertDialog.Builder(AtyBag.this)
-                            .setItems(new String[]{"上架", "炼金", "鉴定"}, new DialogInterface.OnClickListener() {
+                            .setItems(new String[]{"查看配方", "上架", lockStr}, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     switch (which) {
                                         case 0:
-                                            createPutMarketView(item, position);
+                                            ToastClcxUtil.getInstance().showAlert(AtyBag.this, item.getRecipe());
                                             break;
                                         case 1:
-                                            startActivity(new Intent(AtyBag.this, AtyAlchemit.class));
-                                            finish();
+                                            if (item.isLocked()) {
+                                                ToastClcxUtil.getInstance().showToast("该物品已锁定无法上架。");
+                                            } else {
+                                                createPutMarketView(item, position);
+                                            }
                                             break;
                                         case 2:
-                                            startActivity(new Intent(AtyBag.this, AtyAppraisal.class));
-                                            finish();
+                                            item.setLocked(!item.isLocked());
+                                            adapter.notifyDataSetChanged();
+                                            AlchemistaAction.builder().lockUnlockItem(position);
                                             break;
                                         default:
                                             break;
@@ -160,6 +168,14 @@ public class AtyBag extends BaseActivity<BagPresenter, BagModel> implements BagC
                         MarketModel.putItemToMarket(new MarketItem(item, skbBagAlertDialogView.getProgress(), Config
                                 .getAlchemista().getName()));
                         mPresenter.sellItem(location, adapter);
+                        String str = MissionModel.getThisIdPosition(MissionFactory.MISSION_ID_SOLD_ITEM);
+                        if (!str.equals("")) {
+                            String[] positions = str.split(",");
+                            for (int a = 0; a < positions.length; a++) {
+                                int i = Integer.parseInt(positions[a]);
+                                MissionModel.pushMission(i);
+                            }
+                        }
                     }
                 })
                 .setNegativeButton("取消", null)

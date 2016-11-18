@@ -15,13 +15,16 @@ import com.clcx.goldenmaster.Config;
 import com.clcx.goldenmaster.R;
 import com.clcx.goldenmaster.adapters.MarketAdapter;
 import com.clcx.goldenmaster.basement.BaseActivity;
+import com.clcx.goldenmaster.basement.util.MathClcxUtil;
 import com.clcx.goldenmaster.basement.util.ToastClcxUtil;
 import com.clcx.goldenmaster.beans.AlchemiItem;
 import com.clcx.goldenmaster.beans.AlchemistaAction;
 import com.clcx.goldenmaster.beans.MarketItem;
 import com.clcx.goldenmaster.customview.CapacityBean;
 import com.clcx.goldenmaster.customview.CapacityChartView;
+import com.clcx.goldenmaster.factories.MissionFactory;
 import com.clcx.goldenmaster.ui.market.MarketModel;
+import com.clcx.goldenmaster.ui.mission.MissionModel;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -39,6 +42,8 @@ public class AtyInvestment extends BaseActivity<InvestmentPresenter, InvestmentM
     TextView investment2;
     @Bind(R.id.investment3)
     TextView investment3;
+    @Bind(R.id.investment4)
+    TextView investment4;
 
     @Override
     public int getLayoutId() {
@@ -59,11 +64,12 @@ public class AtyInvestment extends BaseActivity<InvestmentPresenter, InvestmentM
         setText(investment1, Config.INVESTTYPE[0]);
         setText(investment2, Config.INVESTTYPE[1]);
         setText(investment3, Config.INVESTTYPE[2]);
+        setText(investment4, Config.INVESTTYPE[3]);
     }
 
     private void setText(TextView tv, InvestType type) {
         String str = "【" + type.getIntro() + "】\n投资时间：" + type.getHour() + "小时\n投资回报率：" + (type
-                .getFeedback() * 100.0f) + "%/小时";
+                .getFeedback() * 100) + "%/小时";
         tv.setText(str);
     }
 
@@ -95,6 +101,15 @@ public class AtyInvestment extends BaseActivity<InvestmentPresenter, InvestmentM
         }
     }
 
+    @OnClick(R.id.investment4)
+    public void investment4(View v) {
+        if (InvestmentModel.judgeIfInvest()) {
+            createInvestMarketView(3);
+        } else {
+            ToastClcxUtil.getInstance().showToast("您已投资过！");
+        }
+    }
+
 
     private void createInvestMarketView(final int typeId) {
         View view = View.inflate(this, R.layout.alertdialog_investment, null);
@@ -108,7 +123,7 @@ public class AtyInvestment extends BaseActivity<InvestmentPresenter, InvestmentM
         skbInvestmentAlert.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                etInvestmentAlert.setText("$" + progress);
+                etInvestmentAlert.setText("$" + MathClcxUtil.getInstance().moneyFormat(progress));
             }
 
             @Override
@@ -128,6 +143,15 @@ public class AtyInvestment extends BaseActivity<InvestmentPresenter, InvestmentM
                     public void onClick(DialogInterface dialog, int which) {
                         InvestmentModel.cacheInvestment(typeId, skbInvestmentAlert.getProgress());
                         AlchemistaAction.builder().getMoney(-1 * skbInvestmentAlert.getProgress());
+                        String str = MissionModel.getThisIdPosition(MissionFactory.MISSION_ID_INVESTMENT);
+                        if (!str.equals("")) {
+                            String[] positions = str.split(",");
+                            for (int a = 0; a < positions.length; a++) {
+                                int i = Integer.parseInt(positions[a]);
+                                MissionModel.pushMission(i);
+                            }
+                        }
+
                     }
                 })
                 .setNegativeButton("取消", null)

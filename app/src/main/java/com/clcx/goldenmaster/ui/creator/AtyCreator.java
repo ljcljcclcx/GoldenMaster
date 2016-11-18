@@ -1,6 +1,8 @@
 package com.clcx.goldenmaster.ui.creator;
 
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -8,12 +10,14 @@ import android.widget.EditText;
 
 import com.clcx.goldenmaster.Config;
 import com.clcx.goldenmaster.R;
+import com.clcx.goldenmaster.customview.MyButton;
 import com.clcx.goldenmaster.ui.house.AtyAlchemistHouse;
 import com.clcx.goldenmaster.basement.BaseActivity;
 import com.clcx.goldenmaster.basement.util.ToastClcxUtil;
 import com.clcx.goldenmaster.beans.Alchemista;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * Created by ljc123 on 2016/10/21.
@@ -21,9 +25,9 @@ import butterknife.Bind;
  */
 public class AtyCreator extends BaseActivity<PreCreator, CreatorModel> implements CreatorContract.View {
     @Bind(R.id.btnCreator)
-    Button btnCreator;
+    MyButton btnCreator;
     @Bind(R.id.btnDelete)
-    Button btnDelete;
+    MyButton btnDelete;
     @Bind(R.id.etCreator)
     EditText etCreator;
 
@@ -87,5 +91,10 @@ public class AtyCreator extends BaseActivity<PreCreator, CreatorModel> implement
         etCreator.setEnabled(true);
         etCreator.setText("");
         btnCreator.setText("创建人物");
+    }
+
+    @OnClick(R.id.btnRestart)
+    public void btnRestart(View v) {
+        Config.newDay();
     }
 }

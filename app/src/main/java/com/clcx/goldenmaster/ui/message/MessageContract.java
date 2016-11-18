@@ -32,6 +32,6 @@ public interface MessageContract {
 
         }
 
-        abstract void clickMessage(int location);//点击消息
+        abstract int clickMessage(int location, boolean ifToast);//点击消息
     }
 }

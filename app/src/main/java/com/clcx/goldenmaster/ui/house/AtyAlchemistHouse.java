@@ -4,6 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -31,6 +34,7 @@ import com.clcx.goldenmaster.basement.util.MathClcxUtil;
 import com.clcx.goldenmaster.basement.util.NotifClcxUtil;
 import com.clcx.goldenmaster.basement.util.ToastClcxUtil;
 import com.clcx.goldenmaster.beans.AlchemistaAction;
+import com.clcx.goldenmaster.customview.AlertPoint;
 import com.clcx.goldenmaster.customview.AlwaysMarqueeTextView;
 import com.clcx.goldenmaster.customview.EnergeBar;
 import com.clcx.goldenmaster.factories.MaterialFactory;
@@ -44,6 +48,11 @@ import com.clcx.goldenmaster.ui.headselector.ClipActivity;
 import com.clcx.goldenmaster.ui.investment.AtyInvestment;
 import com.clcx.goldenmaster.ui.market.AtyMarket;
 import com.clcx.goldenmaster.ui.message.AtyMessage;
+import com.clcx.goldenmaster.ui.message.MessageModel;
+import com.clcx.goldenmaster.ui.mission.AtyMission;
+import com.clcx.goldenmaster.ui.searchmap.AtySearchmap;
+
+import org.json.JSONArray;
 
 import java.io.File;
 
@@ -58,11 +67,13 @@ public class AtyAlchemistHouse extends BaseActivity<PresenterAlHouse, HouseContr
     @Bind(R.id.houseBag)
     TextView houseBag;
     @Bind(R.id.houseMessage)
-    TextView houseMessage;
+    RelativeLayout houseMessage;
     @Bind(R.id.houseRest)
     TextView houseRest;
     @Bind(R.id.houseCollection)
     TextView houseCollection;
+    @Bind(R.id.houseMission)
+    TextView houseMission;
     @Bind(R.id.houseSold)
     TextView houseSold;
     @Bind(R.id.houseAlchemist)
@@ -81,6 +92,8 @@ public class AtyAlchemistHouse extends BaseActivity<PresenterAlHouse, HouseContr
     EnergeBar houseEnergeBar;
     @Bind(R.id.houseMarqueeTv)
     AlwaysMarqueeTextView houseMarqueeTv;
+    @Bind(R.id.houseMessageAlertPoint)
+    AlertPoint houseMessageAlertPoint;
 
 
     @Override
@@ -94,11 +107,9 @@ public class AtyAlchemistHouse extends BaseActivity<PresenterAlHouse, HouseContr
             case R.id.houseSold:
                 startActivity(new Intent(this, AtyMarket.class));
                 break;
-            case R.id.houseAlchemist:
-                startActivity(new Intent(this, AtyAlchemit.class));
-                break;
             case R.id.houseCollection:
                 mPresenter.testItems();
+                startActivity(new Intent(this, AtySearchmap.class));
                 break;
             case R.id.houseBag:
                 startActivity(new Intent(this, AtyBag.class));
@@ -135,19 +146,7 @@ public class AtyAlchemistHouse extends BaseActivity<PresenterAlHouse, HouseContr
         if (houseEnergeBar != null) {
             houseEnergeBar.initUI(100, Config.getAlchemista().getEnerge());
         }
-        houseMarqueeTv.setText(Config.getTodayNews().getContent(), new AlwaysMarqueeTextView.RefreshMaqee() {
-            @Override
-            public void invalidateMe() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (houseMarqueeTv != null) {
-                            houseMarqueeTv.invalidate();
-                        }
-                    }
-                });
-            }
-        });
+        houseMarqueeTv.setText(this, Config.getTodayNews().getContent());
 
 
     }
@@ -161,32 +160,31 @@ public class AtyAlchemistHouse extends BaseActivity<PresenterAlHouse, HouseContr
         houseMessage.setOnClickListener(this);
         houseCollection.setOnClickListener(this);
         houseSold.setOnClickListener(this);
-        houseAlchemist.setOnClickListener(this);
 
-        houseBag.setBackgroundResource(R.drawable.text_border);
-        houseRest.setBackgroundResource(R.drawable.text_border);
-        houseMessage.setBackgroundResource(R.drawable.text_border);
-        houseCollection.setBackgroundResource(R.drawable.text_border);
-        houseSold.setBackgroundResource(R.drawable.text_border);
-        houseAlchemist.setBackgroundResource(R.drawable.text_border);
-        houseInvestment.setBackgroundResource(R.drawable.text_border);
-        houseAppraisal.setBackgroundResource(R.drawable.text_border);
+//        houseBag.setBackgroundResource(R.drawable.text_border);
+//        houseRest.setBackgroundResource(R.drawable.text_border);
+//        houseMessage.setBackgroundResource(R.drawable.text_border);
+//        houseCollection.setBackgroundResource(R.drawable.text_border);
+//        houseSold.setBackgroundResource(R.drawable.text_border);
+//        houseAlchemist.setBackgroundResource(R.drawable.text_border);
+//        houseInvestment.setBackgroundResource(R.drawable.text_border);
+//        houseAppraisal.setBackgroundResource(R.drawable.text_border);
+//        houseMission.setBackgroundResource(R.drawable.text_border);
 
         ImageUtil.loadRoundImg(houseStateImage, Config.getInnerPath("headImage") + File.separator + "AAA.jpg");
-
         mPresenter.initUI();
-
         // 开启服务
         startService(new Intent(this,
                 MessageLocalService.class));
         startService(new Intent(this,
                 MessageProService.class));
+        houseMessageAlertPoint.setMessageCount(MessageModel.getMessages().size());
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        LogCLCXUtils.e("resume");
         ImageUtil.loadRoundImg(houseStateImage, Config.getInnerPath("headImage") + File.separator + "AAA.jpg");
         Glide.get(this).clearMemory();
         new Thread(new Runnable() {
@@ -196,7 +194,10 @@ public class AtyAlchemistHouse extends BaseActivity<PresenterAlHouse, HouseContr
             }
         });
         mPresenter.initUI();
-
+        //初始化信息条数
+        if (houseMessageAlertPoint != null) {
+            houseMessageAlertPoint.setMessageCount(MessageModel.getMessages().size());
+        }
     }
 
     @OnClick(R.id.houseStateImage)
@@ -225,5 +226,20 @@ public class AtyAlchemistHouse extends BaseActivity<PresenterAlHouse, HouseContr
     @OnClick(R.id.houseAppraisal)
     public void houseAppraisal(View v) {
         startActivity(new Intent(this, AtyAppraisal.class));
+    }
+
+    @OnClick(R.id.houseAlchemist)
+    public void houseAlchemist(View v) {
+        startActivity(new Intent(this, AtyAlchemit.class));
+//        ActivityCompat.startActivity(this, new Intent(this, AtyAlchemit.class),
+//                ActivityOptionsCompat.makeSceneTransitionAnimation(this, houseStateImage, AtyAlchemit.TRANS_IMAGE)
+//                        .toBundle());
+
+    }
+
+
+    @OnClick(R.id.houseMission)
+    public void houseMission(View v) {
+        startActivity(new Intent(this, AtyMission.class));
     }
 }

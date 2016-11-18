@@ -67,7 +67,17 @@
             android:screenOrientation="portrait"
             />
         <activity
+            android:name=".ui.searchmap.AtySearchmap"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+        <activity
             android:name=".ui.appraisal.AtyAppraisal"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".ui.mission.AtyMission"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             />

@@ -4,19 +4,11 @@ import android.content.Context;
 
 import com.clcx.goldenmaster.Config;
 import com.clcx.goldenmaster.basement.MyApplication;
-import com.clcx.goldenmaster.basement.util.LogCLCXUtils;
 import com.clcx.goldenmaster.basement.util.ToastClcxUtil;
-import com.clcx.goldenmaster.beans.MarketItem;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by ljc123 on 2016/10/25.
@@ -87,4 +79,5 @@ public class InvestmentModel implements InvestmentContract.Model {
                 .MODE_PRIVATE).getString(Config.SPF_INVESTMENT_TIME,
                 "").equals("");
     }
+
 }

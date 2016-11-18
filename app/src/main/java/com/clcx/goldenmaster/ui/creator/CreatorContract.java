@@ -15,6 +15,7 @@ public interface CreatorContract {
 
     interface View extends BaseView {
         void forbidEditText();
+
         void releaseEditText();
     }
 

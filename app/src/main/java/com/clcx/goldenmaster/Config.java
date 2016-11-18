@@ -11,9 +11,11 @@ import com.clcx.goldenmaster.beans.Alchemista;
 import com.clcx.goldenmaster.beans.MarketItem;
 import com.clcx.goldenmaster.beans.MarketItemAction;
 import com.clcx.goldenmaster.beans.MessageBean;
+import com.clcx.goldenmaster.beans.MissionBean;
 import com.clcx.goldenmaster.beans.TodayNews;
 import com.clcx.goldenmaster.beans.TodayNewsAction;
 import com.clcx.goldenmaster.customview.CapacityBean;
+import com.clcx.goldenmaster.factories.MissionFactory;
 import com.clcx.goldenmaster.ui.investment.InvestType;
 import com.clcx.goldenmaster.ui.investment.InvestmentModel;
 import com.clcx.goldenmaster.ui.market.MarketModel;
@@ -39,14 +41,18 @@ public class Config {
     public static final int REST_ENERGE_RECOVERY[] = {50, 100};//休息体力恢复
     public static final int REST_MONEY_REDUCE[] = {180, 350};//休息金钱消耗
 
-    public static final InvestType INVESTTYPE[] = new InvestType[]{new InvestType(1, 0.025f, "炼金师机构维护投资基金")
-            , new InvestType(6, 0.033f, "冒险家协会基金")
-            , new InvestType(12, 0.036f, "炼金大师天使投资基金")
+    public static final InvestType INVESTTYPE[] = new InvestType[]{
+            new InvestType(1, 0.027f, "炼金师机构维护投资基金")
+            , new InvestType(3, 0.032f, "冒险家协会基金")
+            , new InvestType(6, 0.035f, "勇者医药协会基金")
+            , new InvestType(12, 0.042f, "炼金大师天使投资基金")
     };
 
     public static final String APP_ID = "com.clcx.goldenmaster";
-    private static final String SPF_ALCHEMISTA = "alchemista";
     public static final String SPF_MARKET = "market";
+    public static final String SPF_MISSION = "mission";
+
+    private static final String SPF_ALCHEMISTA = "alchemista";
     private static final String SPF_SAVEDTIME = "savetime";
     private static final String SPF_SAVEDAY = "saveday";
     private static final String SPF_NEWS = "todaynews";
@@ -80,6 +86,30 @@ public class Config {
      */
     public static String getInnerPath(String pathName) {
         return MyApplication.getContext().getFilesDir().getAbsolutePath() + File.separator + pathName;
+    }
+
+    /**
+     * 创建今日任务
+     *
+     * @return
+     */
+    public static void createTodayMissions() {
+        Context context = MyApplication.getContext();
+        try {
+            //先将序列化结果写到byte缓存中，其实就分配一个内存空间
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(bos);
+            //将对象序列化写入byte缓存
+            os.writeObject(MissionFactory.missions);
+            //将序列化的数据转为16进制保存
+            String bytesToHexString = Config.bytesToHexString(bos.toByteArray());
+            //保存该16进制数组
+            context.getSharedPreferences(Config.APP_ID,
+                    Context.MODE_PRIVATE).edit().putString(Config.SPF_MISSION, bytesToHexString).commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogCLCXUtils.e("保存obj失败\n" + e.toString());
+        }
     }
 
     /**
@@ -184,6 +214,7 @@ public class Config {
         //顺序很重要
         createTodayNews();//1
         createTodayMarket();//2
+        createTodayMissions();//3
     }
 
 
@@ -312,6 +343,8 @@ public class Config {
                 Context.MODE_PRIVATE).edit().putString(SPF_MESSAGE, "").commit();
         context.getSharedPreferences(APP_ID,
                 Context.MODE_PRIVATE).edit().putString(SPF_MARKET, "").commit();
+        context.getSharedPreferences(APP_ID,
+                Context.MODE_PRIVATE).edit().putString(SPF_MISSION, "").commit();
         //删除投资数据
         //清空所有数据
         MyApplication.getContext().getSharedPreferences(Config.APP_ID, Context.MODE_PRIVATE).edit().putString

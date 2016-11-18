@@ -1,10 +1,12 @@
 package com.clcx.goldenmaster.adapters;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.clcx.goldenmaster.Config;
@@ -51,6 +53,7 @@ public class HouseBagAdapter extends BaseRecyclerAdapter {
                         .getCapacityPoint());
             }
         });
+        mHolder.housebagItemBackground.setBackgroundColor(bean.isLocked() ? Color.YELLOW : Color.WHITE);
     }
 
     public void setItems(List<AlchemiItem> items) {
@@ -63,10 +66,12 @@ public class HouseBagAdapter extends BaseRecyclerAdapter {
 
         private TextView housebagItemName;
         private CapacityChartView housebagItemCapacity;
+        private RelativeLayout housebagItemBackground;
         private OnItemClickListener onItemClickListener;
 
         public MyHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
+            housebagItemBackground = (RelativeLayout) itemView.findViewById(R.id.housebagItemBackground);
             housebagItemName = (TextView) itemView.findViewById(R.id.housebagItemName);
             housebagItemCapacity = (CapacityChartView) itemView.findViewById(R.id.housebagItemCapacity);
             this.onItemClickListener = onItemClickListener;

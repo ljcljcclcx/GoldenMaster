@@ -23,6 +23,7 @@ public class AlchemiItem implements Serializable {
     protected String type;
     protected int[] gainStateId;
     protected int[] restrainStateId;
+    protected boolean isLocked;//是否被锁定
 
     private boolean isAppraisal;//是否已鉴定
 
@@ -56,6 +57,8 @@ public class AlchemiItem implements Serializable {
         for (int a = 0; a < MAX_PROPERTY_COUNT; a++) {
             this.properties[a] = ITEM_PROPERTIES[a];
         }
+        this.recipe = getName();
+        this.isLocked = false;
         isAppraisal = false;
     }
 
@@ -183,6 +186,14 @@ public class AlchemiItem implements Serializable {
 
     public int[] getGainStateId() {
         return gainStateId;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 
     public void setGainStateId(int[] gainStateId) {

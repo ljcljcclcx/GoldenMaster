@@ -7,6 +7,8 @@ import com.clcx.goldenmaster.basement.util.ToastClcxUtil;
 import com.clcx.goldenmaster.beans.AlchemiItem;
 import com.clcx.goldenmaster.beans.Alchemista;
 import com.clcx.goldenmaster.beans.AlchemistaAction;
+import com.clcx.goldenmaster.factories.MissionFactory;
+import com.clcx.goldenmaster.ui.mission.MissionModel;
 
 /**
  * Created by ljc123 on 2016/10/22.
@@ -27,14 +29,18 @@ public class AlchemistPresenter extends AlchemistContract.Presenter {
             ToastClcxUtil.getInstance().showToast("您的等级太低，无法加入更多材料");
             return;
         }
+        if (item.isLocked()) {
+            ToastClcxUtil.getInstance().showToast("该物品已经被锁定！");
+            return;
+        }
 
         AlchemistaAction.builder().lostItem(location);
         itemsInBottle.add(item);
-        bag.setItems(Config.getAlchemista().getBag());
-        bag.notifyDataSetChanged();
-        bottle.setItems(itemsInBottle);
-        bottle.notifyDataSetChanged();
-        if (itemsInBottle.size() >= 3) {
+        bag.removeItem(location);
+        bag.notifyItemRemoved(location);
+        bottle.addItem(0, item);
+        bottle.notifyItemInserted(0);
+        if (itemsInBottle.size() >= 2) {
             mView.CanAlchemist();
         }
     }
@@ -49,7 +55,7 @@ public class AlchemistPresenter extends AlchemistContract.Presenter {
         bag.notifyDataSetChanged();
         bottle.setItems(itemsInBottle);
         bottle.notifyDataSetChanged();
-        if (itemsInBottle.size() < 3) {
+        if (itemsInBottle.size() <= 2) {
             mView.CanNotAlchemist();
         }
     }
@@ -63,9 +69,19 @@ public class AlchemistPresenter extends AlchemistContract.Presenter {
             bottle.notifyDataSetChanged();
             bag.setItems(Config.getAlchemista().getBag());
             bag.notifyDataSetChanged();
-            //炼金+3经验
-            AlchemistaAction.builder().addExp(3);
+            //炼金+8经验
+            AlchemistaAction.builder().addExp(8);
             AlchemistaAction.builder().reduceEnerge(Config.ALCHAMIST_ENERGE_REDUCE);
+            //计算任务完成
+            String str = MissionModel.getThisIdPosition(MissionFactory.MISSION_ID_MAKE_PRODUCT);
+            if (!str.equals("")) {
+                String[] positions = str.split(",");
+                for (int a = 0; a < positions.length; a++) {
+                    int i = Integer.parseInt(positions[a]);
+                    MissionModel.pushMission(i);
+                }
+            }
+
         } else {
             ToastClcxUtil.getInstance().showToast("你太累了，无法炼金了！");
         }
